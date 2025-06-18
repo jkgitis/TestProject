@@ -1,4 +1,4 @@
-package com.example.clotapp.ui.screens
+package com.example.testproject.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
