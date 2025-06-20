@@ -1,5 +1,7 @@
 package com.example.testproject.screens
 
+import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -16,10 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.testproject.R
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun SignInScreen(navController: NavController) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf(TextFieldValue("")) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -40,7 +46,10 @@ fun SignInScreen(navController: NavController) {
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                errorMessage = ""
+            },
             placeholder = { Text("Email Address") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,10 +58,26 @@ fun SignInScreen(navController: NavController) {
             singleLine = true
         )
 
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.align(Alignment.Start).padding(top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
+            onClick = onClick@{
+                if (!Patterns.EMAIL_ADDRESS.matcher(email.text).matches()) {
+                    errorMessage = "Invalid email format"
+                    return@onClick
+                }
+
+                // Proceed to next screen and pass email
+                navController.currentBackStackEntry?.savedStateHandle?.set("email", email.text)
                 navController.navigate("loginPassword")
             },
             modifier = Modifier
@@ -67,7 +92,7 @@ fun SignInScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Don't have an Account? ",
+            text = "Don't have an Account?",
             fontSize = 14.sp,
             color = Color.Gray
         )
@@ -95,7 +120,7 @@ fun SignInScreen(navController: NavController) {
 @Composable
 fun SocialButton(icon: Int, text: String) {
     OutlinedButton(
-        onClick = { /* Handle social auth */ },
+        onClick = { /* Future: Add Google/Apple/Facebook auth */ },
         shape = RoundedCornerShape(50),
         modifier = Modifier
             .fillMaxWidth()

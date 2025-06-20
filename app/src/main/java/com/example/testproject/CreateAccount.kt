@@ -1,5 +1,6 @@
 package com.example.testproject
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,18 +13,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun CreateAccount(navController: NavController) {
+    val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
+    val db = FirebaseFirestore.getInstance()
+
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -46,7 +55,6 @@ fun CreateAccount(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Title
         Text(
             text = "Create Account",
             fontSize = 28.sp,
@@ -93,7 +101,10 @@ fun CreateAccount(navController: NavController) {
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                errorMessage = ""
+            },
             placeholder = { Text("Email Address") },
             modifier = fieldModifier,
             shape = RoundedCornerShape(12.dp),
@@ -105,7 +116,10 @@ fun CreateAccount(navController: NavController) {
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                errorMessage = ""
+            },
             placeholder = { Text("Password") },
             modifier = fieldModifier,
             shape = RoundedCornerShape(12.dp),
@@ -113,12 +127,51 @@ fun CreateAccount(navController: NavController) {
             colors = fieldColors
         )
 
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
-        //continue button
         Button(
             onClick = {
-                navController.navigate("onboarding")
+                isLoading = true
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val uid = auth.currentUser?.uid
+                            val userData = hashMapOf(
+                                "firstName" to firstName,
+                                "lastName" to lastName,
+                                "email" to email
+                            )
+
+                            if (uid != null) {
+                                db.collection("users")
+                                    .document(uid)
+                                    .set(userData)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show()
+                                        navController.navigate("onboarding")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        errorMessage = "Firestore Error: ${e.message}"
+                                    }
+                            } else {
+                                errorMessage = "User ID not found"
+                            }
+                        } else {
+                            errorMessage = task.exception?.message ?: "Error creating account"
+                        }
+                        isLoading = false
+                    }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,7 +184,6 @@ fun CreateAccount(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //reset password
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
@@ -141,7 +193,6 @@ fun CreateAccount(navController: NavController) {
                 fontSize = 14.sp,
                 color = Color.Gray
             )
-
             Text(
                 text = "Reset",
                 fontWeight = FontWeight.Bold,
@@ -152,13 +203,10 @@ fun CreateAccount(navController: NavController) {
                 }
             )
         }
+
+        if (isLoading) {
+            Spacer(modifier = Modifier.height(16.dp))
+            CircularProgressIndicator(color = Color(0xFF936EF6))
+        }
     }
 }
-
-//@Preview(showSystemUi = true)
-//@Composable
-//fun CreateAccountPreview() {
-//    CreateAccount()
-//}
-
-
