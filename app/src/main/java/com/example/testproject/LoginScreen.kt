@@ -14,11 +14,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.testproject.R
 
 @Composable
-fun SignInScreen() {
+fun SignInScreen(navController: NavController) {
     var email by remember { mutableStateOf(TextFieldValue("")) }
 
     Column(
@@ -52,7 +52,9 @@ fun SignInScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate("loginPassword")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -75,7 +77,9 @@ fun SignInScreen() {
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             color = Color.Black,
-            modifier = Modifier.clickable { /* navigate to signup */ }
+            modifier = Modifier.clickable {
+                navController.navigate("createAccount")
+            }
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -91,7 +95,7 @@ fun SignInScreen() {
 @Composable
 fun SocialButton(icon: Int, text: String) {
     OutlinedButton(
-        onClick = { /*TODO*/ },
+        onClick = { /* Handle social auth */ },
         shape = RoundedCornerShape(50),
         modifier = Modifier
             .fillMaxWidth()
@@ -100,22 +104,16 @@ fun SocialButton(icon: Int, text: String) {
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = text,
-                modifier = Modifier
-                    .size(24.dp)
+                modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(text, color = Color.Black)
         }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun SignInScreenPreview() {
-    SignInScreen()
 }

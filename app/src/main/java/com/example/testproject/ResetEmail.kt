@@ -15,10 +15,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.testproject.R
 
 @Composable
-fun ResetEmail() {
+fun ResetEmail(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +47,9 @@ fun ResetEmail() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { /* TODO: Navigate to Login Screen */ },
+            onClick = {
+                navController.navigate("login")
+            },
             modifier = Modifier
                 .width(160.dp)
                 .height(40.dp),
@@ -58,8 +61,8 @@ fun ResetEmail() {
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun ResetEmailPreview() {
-    ResetEmail()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun ResetEmailPreview() {
+//    ResetEmail()
+//}

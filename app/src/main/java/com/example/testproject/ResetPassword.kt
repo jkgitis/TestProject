@@ -16,9 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @Composable
-fun ResetPasswordScreen() {
+fun ResetPasswordScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
 
     Column(
@@ -80,7 +81,9 @@ fun ResetPasswordScreen() {
 
         // Continue Button
         Button(
-            onClick = { /* Handle continue */ },
+            onClick = {
+                navController.navigate("resetEmail")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -92,8 +95,8 @@ fun ResetPasswordScreen() {
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun ResetPasswordScreenPreview() {
-    ResetPasswordScreen()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun ResetPasswordScreenPreview() {
+//    ResetPasswordScreen()
+//}

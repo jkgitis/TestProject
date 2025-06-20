@@ -16,9 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @Composable
-fun Onboarding() {
+fun Onboarding(navController: NavController) {
     var selectedGender by remember { mutableStateOf("Women") }
 
     Box(
@@ -138,8 +139,8 @@ fun GenderChip(text: String, isSelected: Boolean, onClick: () -> Unit) {
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun OnboardingPreview() {
-    Onboarding()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun OnboardingPreview() {
+//    Onboarding()
+//}

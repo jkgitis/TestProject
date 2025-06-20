@@ -16,9 +16,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @Composable
-fun CreateAccount() {
+fun CreateAccount(navController: NavController) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -32,7 +33,9 @@ fun CreateAccount() {
     ) {
         // Back button
         IconButton(
-            onClick = { /* handle back */ },
+            onClick = {
+                navController.navigate("login")
+            },
             modifier = Modifier
                 .align(Alignment.Start)
                 .size(36.dp)
@@ -112,8 +115,11 @@ fun CreateAccount() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        //continue button
         Button(
-            onClick = { /* Handle create account */ },
+            onClick = {
+                navController.navigate("onboarding")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -125,6 +131,7 @@ fun CreateAccount() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //reset password
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
@@ -140,16 +147,18 @@ fun CreateAccount() {
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 color = Color.Black,
-                modifier = Modifier.clickable { /* navigate to reset */ }
+                modifier = Modifier.clickable {
+                    navController.navigate("resetPassword")
+                }
             )
         }
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun CreateAccountPreview() {
-    CreateAccount()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun CreateAccountPreview() {
+//    CreateAccount()
+//}
 
 

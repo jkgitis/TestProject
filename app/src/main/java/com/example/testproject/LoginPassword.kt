@@ -19,10 +19,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.testproject.R
 
 @Composable
-fun LoginPassword() {
+fun LoginPassword(navController: NavController ) {
 
     var password by remember { mutableStateOf("") }
     Column(
@@ -55,8 +56,9 @@ fun LoginPassword() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //continue button
         Button(
-            onClick = { /*TODO : Handle Login*/ },
+            onClick = { /*TODO : Handle Login*/ }, //should go to homepage
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -68,6 +70,7 @@ fun LoginPassword() {
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        //Reset Password
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
@@ -84,16 +87,18 @@ fun LoginPassword() {
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 color = Color.Black,
-                modifier = Modifier.clickable { /* navigate to signup */ }
+                modifier = Modifier.clickable {
+                    navController.navigate("resetPassword")
+                }
             )
         }
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun LoginPasswordPreview(){
-    LoginPassword()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun LoginPasswordPreview(){
+//    LoginPassword()
+//}
 
 
